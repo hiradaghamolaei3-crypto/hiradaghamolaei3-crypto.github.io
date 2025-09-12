@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>سایت هیراد</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #0f0;
+      font-family: monospace;
+      text-align: center;
+      padding-top: 100px;
+    }
+    h1 {
+      font-size: 3em;
+    }
+  </style>
+</head>
+<body>
+  <h1>سلام دنیا!</h1>
+  <p>این سایت با قدرت هیراد ساخته شده 😎</p>
+</body>
+</html>
