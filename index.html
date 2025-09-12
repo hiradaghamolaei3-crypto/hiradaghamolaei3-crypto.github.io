@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>چت‌بات هیراد</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #eee;
+      font-family: monospace;
+      text-align: center;
+      padding: 50px;
+    }
+    #chatbox {
+      width: 90%;
+      max-width: 500px;
+      margin: auto;
+      background-color: #222;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .msg {
+      text-align: right;
+      margin: 10px 0;
+    }
+    .bot {
+      color: #00ffcc;
+    }
+    .user {
+      color: #ffcc00;
+    }
+    input {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      background-color: #444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>چت‌بات هیراد 🤖</h1>
+  <div id="chatbox"></div>
+  <input type="text" id="userInput" placeholder="پیامت رو بنویس...">
+  <button onclick="sendMessage()">ارسال</button>
+
+  <script>
+    const chatbox = document.getElementById("chatbox");
+
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const text = input.value.trim();
+      if (text === "") return;
+
+      addMessage("user", text);
+      input.value = "";
+
+      // پاسخ‌های ساده و مراسمی
+      let response = "متوجه نشدم، لطفاً واضح‌تر بگو.";
+
+      if (text.includes("سلام")) response = "سلام هیراد! آماده‌ام برای اجرای مراسم ⚡";
+      else if (text.includes("کی هستی")) response = "من چت‌بات اختصاصی تو هستم، ساخته‌شده برای کنترل کامل توسط تو.";
+      else if (text.includes("خسته‌ام")) response = "می‌خوای یه داستان شبانه برات تعریف کنم؟ 🌙";
+      else if (text.includes("سایت")) response = "سایتت فعاله، فقط باید روح بریزی توش. بزن تا بسازیم 💥";
+
+      addMessage("bot", response);
+    }
+
+    function addMessage(sender, text) {
+      const msg = document.createElement("div");
+      msg.className = "msg " + sender;
+      msg.innerText = text;
+      chatbox.appendChild(msg);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
