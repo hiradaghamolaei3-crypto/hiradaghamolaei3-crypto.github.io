@@ -2,63 +2,66 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>گزارش چت‌بات هیراد</title>
+  <title>ChatBot بدون API Key</title>
   <style>
-    body {
-      background-color: #111;
-      color: #eee;
-      font-family: monospace;
-      padding: 40px;
-      line-height: 1.8;
+    body { background:#111; color:white; font-family:sans-serif; }
+    #chatbox {
+      width: 90%; height: 400px; margin: 20px auto;
+      border: 1px solid #444; padding: 10px; overflow-y: auto;
+      background:#222; border-radius:10px;
     }
-    h1, h2 {
-      color: #00ffcc;
-      text-align: center;
+    .msg { margin:10px 0; }
+    .user { color:#4fc3f7; }
+    .bot { color:#a5ff7a; }
+    input {
+      width: 80%; padding:10px; border-radius:10px; border:none;
     }
-    .section {
-      margin-bottom: 30px;
-      background-color: #222;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    .highlight {
-      color: #ffcc00;
+    button {
+      padding:10px 20px; border:none; border-radius:10px;
+      background:#4fc3f7; color:#000; cursor:pointer;
     }
   </style>
 </head>
 <body>
-  <h1>📡 گزارش چت‌بات هوشمند هیراد</h1>
 
-  <div class="section">
-    <h2>وضعیت فعلی</h2>
-    <p>✅ چت‌بات ساخته شده و روی سایت فعال شده</p>
-    <p>✅ فایل <span class="highlight">index.html</span> در ریشهٔ مخزن قرار دارد</p>
-    <p>✅ طراحی فارسی، تاریک، و مراسمی اجرا شده</p>
-    <p>✅ پاسخ‌ها به پیام‌های ساده مثل "سلام" فعال هستند</p>
-  </div>
+<h2 style="text-align:center;">چت بات بدون API KEY</h2>
 
-  <div class="section">
-    <h2>اتصال به API</h2>
-    <p>🔐 کلید API فعلی: <span class="highlight">AIzaSyDYK8hcMvFBiOgJfsvB5g6us2_TD8lb538</span></p>
-    <p>⚠️ این کلید مربوط به Google API است—not OpenAI</p>
-    <p>برای اتصال به مغز هوشمند مثل GPT، نیاز به کلید <span class="highlight">OpenAI</span> با فرمت <code>sk-...</code> داریم</p>
-  </div>
+<div id="chatbox"></div>
 
-  <div class="section">
-    <h2>مسیرهای بعدی پیشنهادی</h2>
-    <ul>
-      <li>🌙 افزودن حالت شب با افکت‌های آرام‌بخش</li>
-      <li>🔐 رمز ورود برای فعال‌سازی چت‌بات</li>
-      <li>🎮 چرخ شانس برای تعامل بیشتر</li>
-      <li>📜 پیام‌های رمزدار با پاسخ‌های مراسمی</li>
-      <li>🧠 اتصال به GPT برای پاسخ‌های هوشمند</li>
-    </ul>
-  </div>
+<div style="text-align:center;">
+  <input id="input" placeholder="پیامتو بنویس...">
+  <button onclick="send()">ارسال</button>
+</div>
 
-  <div class="section">
-    <h2>فرمان نهایی</h2>
-    <p>هیراد گفت: <span class="highlight">«تبدیلش کن به HTML گزارش»</span></p>
-    <p>و این فایل، پاسخ مستقیم به اون فرمانه—با کنترل کامل، احترام کامل، و آمادگی برای مرحلهٔ بعدی</p>
-  </div>
+<script>
+async function send() {
+  const input = document.getElementById("input");
+  const chatbox = document.getElementById("chatbox");
+
+  const text = input.value.trim();
+  if (!text) return;
+
+  // نمایش پیام کاربر
+  chatbox.innerHTML += `<div class='msg user'>👤 شما: ${text}</div>`;
+  chatbox.scrollTop = chatbox.scrollHeight;
+
+  input.value = "";
+
+  // درخواست از API عمومی
+  try {
+    const res = await fetch("https://api.adviceslip.com/advice");
+    const data = await res.json();
+
+    const reply = data.slip.advice;
+
+    chatbox.innerHTML += `<div class='msg bot'>🤖 ربات: ${reply}</div>`;
+    chatbox.scrollTop = chatbox.scrollHeight;
+
+  } catch(err) {
+    chatbox.innerHTML += `<div class='msg bot'>⚠️ خطا در اتصال به API</div>`;
+  }
+}
+</script>
+
 </body>
 </html>
