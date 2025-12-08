@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>ChatBot بدون API Key</title>
+  <style>
+    body { background:#111; color:white; font-family:sans-serif; }
+    #chatbox {
+      width: 90%; height: 400px; margin: 20px auto;
+      border: 1px solid #444; padding: 10px; overflow-y: auto;
+      background:#222; border-radius:10px;
+    }
+    .msg { margin:10px 0; }
+    .user { color:#4fc3f7; }
+    .bot { color:#a5ff7a; }
+    input {
+      width: 80%; padding:10px; border-radius:10px; border:none;
+    }
+    button {
+      padding:10px 20px; border:none; border-radius:10px;
+      background:#4fc3f7; color:#000; cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">چت بات بدون API KEY</h2>
+
+<div id="chatbox"></div>
+
+<div style="text-align:center;">
+  <input id="input" placeholder="پیامتو بنویس...">
+  <button onclick="send()">ارسال</button>
+</div>
+
+<script>
+async function send() {
+  const input = document.getElementById("input");
+  const chatbox = document.getElementById("chatbox");
+
+  const text = input.value.trim();
+  if (!text) return;
+
+  // نمایش پیام کاربر
+  chatbox.innerHTML += `<div class='msg user'>👤 شما: ${text}</div>`;
+  chatbox.scrollTop = chatbox.scrollHeight;
+
+  input.value = "";
+
+  // درخواست از API عمومی
+  try {
+    const res = await fetch("https://api.adviceslip.com/advice");
+    const data = await res.json();
+
+    const reply = data.slip.advice;
+
+    chatbox.innerHTML += `<div class='msg bot'>🤖 ربات: ${reply}</div>`;
+    chatbox.scrollTop = chatbox.scrollHeight;
+
+  } catch(err) {
+    chatbox.innerHTML += `<div class='msg bot'>⚠️ خطا در اتصال به API</div>`;
+  }
+}
+</script>
+
+</body>
+</html>
