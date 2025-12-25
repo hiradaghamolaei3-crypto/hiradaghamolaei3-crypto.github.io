@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>همستر کلیکر | نسخه هیراد</title>
+<style>
+  :root{
+    --bg:#0f172a; --card:#111827; --soft:#1f2937; --text:#e5e7eb; --sub:#94a3b8;
+    --accent:#22d3ee; --good:#10b981; --warn:#f59e0b; --bad:#ef4444;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family: Vazirmatn, IRANSans, Segoe UI, Roboto, sans-serif;
+    background: radial-gradient(1200px 600px at 100% -10%, #0b2237 10%, var(--bg) 60%), var(--bg);
+    color:var(--text);
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:16px;display:grid;gap:16px}
+  .header{
+    display:flex;align-items:center;justify-content:space-between;gap:12px
+  }
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{
+    width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#22d3ee,#3b82f6);
+    display:grid;place-items:center;box-shadow:0 8px 24px rgba(34,211,238,.35)
+  }
+  .logo span{font-weight:900;color:#001b2a}
+  .title{font-weight:800;font-size:20px}
+  .muted{color:var(--sub);font-size:13px}
+  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+  @media (max-width:800px){.grid{grid-template-columns:1fr}}
+  .card{
+    background:linear-gradient(180deg,rgba(255,255,255,.03),transparent),var(--card);
+    border:1px solid rgba(255,255,255,.06); border-radius:16px; padding:14px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.02)
+  }
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media (max-width:570px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .pill{
+    background:var(--soft); border:1px solid rgba(255,255,255,.06); border-radius:12px;padding:10px
+  }
+  .pill .k{font-size:12px;color:var(--sub)}
+  .pill .v{font-weight:800;font-size:18px;margin-top:4px}
+  .tapArea{
+    display:grid; gap:12px; place-items:center; padding:16px; border-radius:16px;
+    border:1px dashed rgba(148,163,184,.25); background:rgba(2,6,23,.35)
+  }
+  .tapBtn{
+    width:210px;height:210px;border-radius:50%;
+    background: radial-gradient(60% 60% at 50% 35%, #39e1f3 0%, #22d3ee 40%, #0ea5e9 100%);
+    box-shadow: 0 20px 50px rgba(34,211,238,.35), inset 0 -8px 30px rgba(2,6,23,.35);
+    border:none; color:#003244; font-weight:900; font-size:22px; cursor:pointer; transition: transform .06s ease, filter .2s
+  }
+  .tapBtn:active{transform:scale(.96)}
+  .tapMeta{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .chip{background:rgba(148,163,184,.12);border:1px solid rgba(148,163,184,.18);padding:6px 10px;border-radius:999px;font-size:12px}
+  .bar{width:100%;height:10px;background:#0b1324;border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+  .bar>i{display:block;height:100%;background:linear-gradient(90deg,#22d3ee,#10b981);width:0%}
+  .shop h3,.right h3{margin:4px 0 10px 0}
+  .item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;border-radius:12px;background:var(--soft);border:1px solid rgba(255,255,255,.06);margin-bottom:10px}
+  .item .name{font-weight:700}
+  .item .desc{font-size:12px;color:var(--sub)}
+  .item button{
+    background:#22d3ee;color:#01212b;border:none;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer
+  }
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .btn{background:#0b1324;border:1px solid rgba(255,255,255,.08);color:var(--text);padding:8px 12px;border-radius:10px;cursor:pointer}
+  .btn.good{border-color:rgba(16,185,129,.5)}
+  .btn.warn{border-color:rgba(245,158,11,.5)}
+  .note{font-size:12px;color:var(--sub)}
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+  .switch{display:inline-flex;align-items:center;gap:8px;user-select:none;cursor:pointer}
+  .switch input{display:none}
+  .switch i{width:44px;height:24px;background:#0b1324;border:1px solid rgba(255,255,255,.08);border-radius:999px;position:relative;transition:.2s}
+  .switch i::after{content:"";position:absolute;inset:2px auto 2px 2px;width:20px;border-radius:50%;background:#94a3b8;transition:.2s}
+  .switch input:checked + i{background:#022a2e;border-color:#22d3ee}
+  .switch input:checked + i::after{left:22px;background:#22d3ee}
+  .toast{
+    position:fixed;left:50%;top:16px;transform:translateX(-50%);background:#0b1324;border:1px solid rgba(255,255,255,.1);
+    color:var(--text);padding:10px 14px;border-radius:10px;opacity:0;pointer-events:none;transition:.2s
+  }
+  .toast.show{opacity:1;top:22px}
+  a.link{color:#22d3ee;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="brand">
+      <div class="logo"><span>HM</span></div>
+      <div>
+        <div class="title">همستر کلیکر | نسخهٔ هیراد</div>
+        <div class="muted">کلیک کن، ارتقا بخر، و هر روز پاداش بگیر — همه‌چیز توی مرورگر ذخیره می‌شه.</div>
+      </div>
+    </div>
+    <div class="row">
+      <label class="switch" title="حالت کم‌مصرف انیمیشن">
+        <input id="lowMotion" type="checkbox">
+        <i></i>
+      </label>
+      <button id="reset" class="btn warn">ریست</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- چپ: بازی -->
+    <div class="card">
+      <div class="stats">
+        <div class="pill">
+          <div class="k">سکه</div>
+          <div class="v" id="coins">0</div>
+        </div>
+        <div class="pill">
+          <div class="k">قدرت هر ضربه</div>
+          <div class="v"><span id="tapPower">1</span></div>
+        </div>
+        <div class="pill">
+          <div class="k">ربات ماینر</div>
+          <div class="v"><span id="miners">0</span> <span class="muted">(+<span id="cps">0</span>/ث)</span></div>
+        </div>
+        <div class="pill">
+          <div class="k">انرژی</div>
+          <div class="v"><span id="energy">50</span>/<span id="maxEnergy">50</span></div>
+        </div>
+      </div>
+
+      <div class="tapArea" style="margin-top:12px">
+        <button id="tap" class="tapBtn">همستر!</button>
+        <div class="tapMeta">
+          <span class="chip">+ <b id="tapGain">1</b> سکه با هر ضربه</span>
+          <span class="chip">-1 انرژی در هر ضربه</span>
+        </div>
+        <div class="bar"><i id="energyBar"></i></div>
+      </div>
+
+      <div class="shop" style="margin-top:14px">
+        <h3>فروشگاه ارتقا</h3>
+
+        <div class="item">
+          <div>
+            <div class="name">افزایش قدرت ضربه</div>
+            <div class="desc">قدرت هر ضربه +1 | قیمت: <span id="costPower">50</span> سکه</div>
+          </div>
+          <button id="buyPower">خرید</button>
+        </div>
+
+        <div class="item">
+          <div>
+            <div class="name">ربات ماینر</div>
+            <div class="desc">+<span id="minerRate">1</span> سکه در ثانیه | قیمت: <span id="costMiner">120</span> سکه</div>
+          </div>
+          <button id="buyMiner">خرید</button>
+        </div>
+
+        <div class="item">
+          <div>
+            <div class="name">ظرفیت انرژی</div>
+            <div class="desc">حداکثر انرژی +10 | قیمت: <span id="costEnergy">80</span> سکه</div>
+          </div>
+          <button id="buyEnergy">خرید</button>
+        </div>
+      </div>
+
+      <div class="foot">
+        <div class="row">
+          <button id="daily" class="btn good">🎁 پاداش روزانه</button>
+          <button id="refill" class="btn">⚡ شارژ سریع انرژی</button>
+        </div>
+        <div class="note" id="status">آماده.</div>
+      </div>
+    </div>
+
+    <!-- راست: پنل‌ها -->
+    <div class="card right">
+      <h3>ماموریت‌های ساده</h3>
+      <div class="item">
+        <div>
+          <div class="name">۱۰ بار کلیک کن</div>
+          <div class="desc">پاداش: ۲۰ سکه</div>
+        </div>
+        <button class="claim btn" data-task="click10">دریافت</button>
+      </div>
+      <div class="item">
+        <div>
+          <div class="name">۵۰۰ سکه جمع کن</div>
+          <div class="desc">پاداش: ۱ ربات ماینر</div>
+        </div>
+        <button class="claim btn" data-task="c500">دریافت</button>
+      </div>
+      <div class="item">
+        <div>
+          <div class="name">اولین ارتقا را بخر</div>
+          <div class="desc">پاداش: ۳۰ سکه</div>
+        </div>
+        <button class="claim btn" data-task="firstBuy">دریافت</button>
+      </div>
+
+      <h3 style="margin-top:16px">تنظیمات صدا</h3>
+      <div class="row">
+        <label class="switch" title="افکت صوتی ضربه">
+          <input id="sfx" type="checkbox" checked>
+          <i></i>
+        </label>
+        <span class="muted">افکت کلیک</span>
+      </div>
+
+      <h3 style="margin-top:16px">درباره</h3>
+      <div class="muted">
+        ساختهٔ هیراد — نسخهٔ سادهٔ تحت وب. هر جا خواستی بازش کن.  
+        دوست داری لوگو و رنگ‌ها شخصی‌سازی بشن؟ مقادیر CSS بالای فایل رو تغییر بده.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast" class="toast">پیام</div>
+
+<script>
+  // وضعیت بازی
+  const state = {
+    coins: 0,
+    tapPower: 1,
+    miners: 0,
+    minerRate: 1,      // هر ربات، چند سکه در ثانیه بده
+    energy: 50,
+    maxEnergy: 50,
+    costPower: 50,
+    costMiner: 120,
+    costEnergy: 80,
+    clicks: 0,
+    boughtSomething: false,
+    lastDaily: 0,
+    sfx: true,
+    lowMotion: false,
+  };
+
+  // DOM
+  const $ = sel => document.querySelector(sel);
+  const coinsEl = $('#coins');
+  const tapPowerEl = $('#tapPower');
+  const minersEl = $('#miners');
+  const cpsEl = $('#cps');
+  const tapGainEl = $('#tapGain');
+  const energyEl = $('#energy');
+  const maxEnergyEl = $('#maxEnergy');
+  const energyBar = $('#energyBar');
+  const statusEl = $('#status');
+
+  const costPowerEl = $('#costPower');
+  const costMinerEl = $('#costMiner');
+  const costEnergyEl = $('#costEnergy');
+  const minerRateEl = $('#minerRate');
+
+  // SFX
+  function beep(){
+    if(!state.sfx) return;
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type='sine'; o.frequency.value=560;
+      o.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.15, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+0.08);
+      o.start(); o.stop(ctx.currentTime+0.09);
+    }catch(e){}
+  }
+
+  // ذخیره/بارگذاری
+  const KEY='hamster_clicker_hirad_v1';
+  function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+  function load(){
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return;
+    try{
+      const s = JSON.parse(raw);
+      Object.assign(state, s);
+    }catch(e){}
+  }
+
+  function fmt(n){ return n.toLocaleString('fa-IR'); }
+  function setStatus(t){ statusEl.textContent=t; }
+  function toast(t){
+    const el = $('#toast'); el.textContent=t; el.classList.add('show');
+    setTimeout(()=>el.classList.remove('show'), 1600);
+  }
+
+  function refresh(){
+    coinsEl.textContent = fmt(state.coins);
+    tapPowerEl.textContent = fmt(state.tapPower);
+    minersEl.textContent = fmt(state.miners);
+    cpsEl.textContent = fmt(state.miners * state.minerRate);
+    tapGainEl.textContent = fmt(state.tapPower);
+    energyEl.textContent = fmt(state.energy);
+    maxEnergyEl.textContent = fmt(state.maxEnergy);
+    costPowerEl.textContent = fmt(state.costPower);
+    costMinerEl.textContent = fmt(state.costMiner);
+    costEnergyEl.textContent = fmt(state.costEnergy);
+    minerRateEl.textContent = fmt(state.minerRate);
+
+    const p = Math.max(0, Math.min(100, 100*state.energy/state.maxEnergy));
+    energyBar.style.width = p + '%';
+  }
+
+  function canAfford(c){ return state.coins >= c; }
+  function spend(c){ state.coins -= c; }
+  function buyPower(){
+    if(!canAfford(state.costPower)) return toast('سکه کافی نیست!');
+    spend(state.costPower);
+    state.tapPower += 1;
+    state.costPower = Math.round(state.costPower * 1.55);
+    state.boughtSomething = true;
+    setStatus('قدرت ضربه ارتقا یافت.');
+    refresh(); save(); beep();
+  }
+  function buyMiner(){
+    if(!canAfford(state.costMiner)) return toast('سکه کافی نیست!');
+    spend(state.costMiner);
+    state.miners += 1;
+    state.costMiner = Math.round(state.costMiner * 1.6);
+    setStatus('یک ربات ماینر به خدمت تو درآمد.');
+    refresh(); save(); beep();
+  }
+  function buyEnergy(){
+    if(!canAfford(state.costEnergy)) return toast('سکه کافی نیست!');
+    spend(state.costEnergy);
+    state.maxEnergy += 10;
+    state.energy = Math.min(state.maxEnergy, state.energy + 10);
+    state.costEnergy = Math.round(state.costEnergy * 1.5);
+    setStatus('ظرفیت انرژی افزایش یافت.');
+    refresh(); save(); beep();
+  }
+
+  function tap(){
+    if(state.energy <= 0) return toast('انرژی تموم شده! شارژ کن.');
+    state.energy -= 1;
+    state.coins += state.tapPower;
+    state.clicks += 1;
+    if(!state.lowMotion){
+      const b = $('#tap');
+      b.style.filter='brightness(1.08)';
+      setTimeout(()=>b.style.filter='none',70);
+    }
+    refresh(); save(); if(state.sfx) beep();
+  }
+
+  function tick(){
+    // ماینرها
+    const cps = state.miners * state.minerRate;
+    if(cps>0){
+      state.coins += cps;
+    }
+    // شارژ انرژی آهسته
+    if(state.energy < state.maxEnergy){
+      state.energy = Math.min(state.maxEnergy, state.energy + 0.5);
+    }
+    refresh(); save();
+  }
+
+  function dailyReward(){
+    const now = Date.now();
+    const oneDay = 24*60*60*1000;
+    if(now - state.lastDaily < oneDay){
+      const remain = oneDay - (now - state.lastDaily);
+      const h = Math.floor(remain/3600000);
+      const m = Math.floor((remain%3600000)/60000);
+      return toast(`بیا ${h} ساعت و ${m} دقیقهٔ دیگه.`);
+    }
+    const reward = 200 + Math.floor(state.miners*10 + state.tapPower*5);
+    state.coins += reward;
+    state.lastDaily = now;
+    toast(`🎁 پاداش روزانه: ${reward.toLocaleString('fa-IR')} سکه`);
+    save(); refresh(); beep();
+  }
+
+  function quickRefill(){
+    const need = state.maxEnergy - state.energy;
+    if(need <= 0) return toast('انرژی فول است!');
+    const price = Math.ceil(need * 1); // هر ۱ انرژی = ۱ سکه
+    if(!canAfford(price)) return toast('سکه کافی برای شارژ سریع نداری.');
+    spend(price);
+    state.energy = state.maxEnergy;
+    toast('⚡ انرژی کامل شد.');
+    save(); refresh(); beep();
+  }
+
+  function claimTask(key){
+    switch(key){
+      case 'click10':
+        if(state.clicks >= 10){
+          state.coins += 20; toast('۲۰ سکه گرفتی. آفرین!');
+          state.clicks = 0; // ریست شمارش این ماموریت
+        }else return toast('هنوز کامل نشده.');
+        break;
+      case 'c500':
+        if(state.coins >= 500){
+          state.miners += 1; toast('یک ربات ماینر هدیه گرفتی!');
+        }else return toast('سکه‌هات هنوز کم هست.');
+        break;
+      case 'firstBuy':
+        if(state.boughtSomething){
+          state.coins += 30; toast('۳۰ سکه هدیه برای اولین خرید!');
+          state.boughtSomething = false;
+        }else return toast('اول یه ارتقا بخر.');
+        break;
+    }
+    save(); refresh();
+  }
+
+  function resetAll(){
+    if(!confirm('همه‌چیز ریست شود؟')) return;
+    localStorage.removeItem(KEY);
+    Object.assign(state, {
+      coins: 0, tapPower: 1, miners: 0, minerRate: 1,
+      energy: 50, maxEnergy: 50, costPower: 50, costMiner: 120, costEnergy: 80,
+      clicks: 0, boughtSomething: false, lastDaily: 0, sfx: true, lowMotion:false
+    });
+    save(); refresh(); toast('ریست شد.');
+  }
+
+  // رویدادها
+  $('#tap').addEventListener('click', tap);
+  $('#buyPower').addEventListener('click', buyPower);
+  $('#buyMiner').addEventListener('click', buyMiner);
+  $('#buyEnergy').addEventListener('click', buyEnergy);
+  $('#daily').addEventListener('click', dailyReward);
+  $('#refill').addEventListener('click', quickRefill);
+  document.querySelectorAll('.claim').forEach(b=>{
+    b.addEventListener('click', ()=>claimTask(b.dataset.task));
+  });
+  $('#reset').addEventListener('click', resetAll);
+
+  // تنظیمات
+  const sfxEl = $('#sfx'); sfxEl.addEventListener('change', e=>{state.sfx=e.target.checked; save();});
+  const lowMotionEl = $('#lowMotion'); lowMotionEl.addEventListener('change', e=>{state.lowMotion=e.target.checked; save();});
+
+  // شروع
+  load(); refresh(); setStatus('شروع کن! کلیک روی همستر = سکه.');
+  setInterval(tick, 1000);
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مدیریت ذخیره | Hamster Clicker (نسخه هیراد)</title>
+<style>
+  :root{--bg:#0f172a;--card:#111827;--soft:#1f2937;--text:#e5e7eb;--sub:#94a3b8;--acc:#22d3ee;--good:#10b981;--warn:#f59e0b;--bad:#ef4444}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Vazirmatn,IRANSans,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  .wrap{max-width:900px;margin:0 auto;padding:16px;display:grid;gap:16px}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.03),transparent),var(--card);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px}
+  .title{font-weight:800;font-size:18px;margin-bottom:6px}
+  .muted{color:var(--sub);font-size:12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  button{background:var(--acc);color:#01212b;border:none;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}
+  button.good{background:var(--good);color:#012b1f}
+  button.warn{background:var(--warn);color:#2b1b01}
+  button.bad{background:var(--bad);color:#2b0101}
+  input[type="file"],textarea,input[type="text"]{width:100%;background:var(--soft);border:1px solid rgba(255,255,255,.08);color:var(--text);border-radius:10px;padding:10px}
+  textarea{min-height:120px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:820px){.grid{grid-template-columns:1fr}}
+  .kv{display:grid;grid-template-columns:140px 1fr;gap:8px;font-size:14px}
+  .kv b{color:#cbd5e1}
+  .ok{color:var(--good)}
+  .err{color:var(--bad)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="title">مدیریت ذخیرهٔ بازی — Hamster Clicker (نسخهٔ هیراد)</div>
+    <div class="muted">
+      با این ابزار می‌تونی سیو را از مرورگرت استخراج کنی، فایل JSON دانلود کنی، یا سیو را از فایل/متن وارد کنی.
+      کلید ذخیره: <code>hamster_clicker_hirad_v1</code>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="title">وضعیت فعلی سیو</div>
+      <div id="status" class="muted">در حال بررسی…</div>
+      <div id="summary" style="margin-top:10px"></div>
+      <div class="row" style="margin-top:10px">
+        <button id="exportBtn" class="good">دانلود سیو (JSON)</button>
+        <button id="copyBtn">کپی متن سیو</button>
+        <button id="backupBtn">دانلود بک‌آپ زمان‌دار</button>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="refreshBtn">بازخوانی از مرورگر</button>
+        <button id="clearBtn" class="bad">حذف سیو از مرورگر</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">وارد کردن سیو جدید</div>
+      <label class="muted">۱) انتخاب فایل JSON (اختیاری)</label>
+      <input id="file" type="file" accept="application/json">
+      <div style="height:8px"></div>
+      <label class="muted">۲) یا چسباندن متن JSON</label>
+      <textarea id="inputText" placeholder='{"coins":123,"tapPower":2,...}'></textarea>
+      <div class="row" style="margin-top:10px">
+        <button id="validateBtn">اعتبارسنجی</button>
+        <button id="importReplaceBtn" class="warn">وارد کردن (جایگزینی کامل)</button>
+        <button id="importMergeBtn">وارد کردن (ادغام هوشمند)</button>
+      </div>
+      <div id="importStatus" class="muted" style="margin-top:8px">متنی وارد نشده.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="title">راهنما</div>
+    <ul class="muted">
+      <li>برای گرفتن فایل سیو، «دانلود سیو (JSON)» را بزن.</li>
+      <li>برای انتقال سیو به دستگاه دیگر، فایل را آن‌جا با «وارد کردن (جایگزینی)» بارگذاری کن.</li>
+      <li>اگر می‌خواهی فقط بعضی مقادیر اضافه شود، از «ادغام هوشمند» استفاده کن.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const KEY = 'hamster_clicker_hirad_v1';
+
+const $ = s => document.querySelector(s);
+const statusEl = $('#status');
+const summaryEl = $(
